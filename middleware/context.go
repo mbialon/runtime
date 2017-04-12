@@ -332,14 +332,14 @@ func (c *Context) RouteInfo(request *http.Request) (*MatchedRoute, bool) {
 }
 
 // ResponseFormat negotiates the response content type
-func (c *Context) ResponseFormat(r *http.Request, offers []string) string {
+func (c *Context) ResponseFormat(r *http.Request, offers []string, defaultOffer string) string {
 	if v, ok := context.GetOk(r, ctxResponseFormat); ok {
 		if val, ok := v.(string); ok {
 			return val
 		}
 	}
 
-	format := NegotiateContentType(r, offers, "")
+	format := NegotiateContentType(r, offers, defaultOffer)
 	if format != "" {
 		context.Set(r, ctxResponseFormat, format)
 	}
@@ -422,7 +422,7 @@ func (c *Context) Respond(rw http.ResponseWriter, r *http.Request, produces []st
 	// the default producer is last so more specific producers take precedence
 	offers = append(offers, c.api.DefaultProduces())
 
-	format := c.ResponseFormat(r, offers)
+	format := c.ResponseFormat(r, offers, c.api.DefaultProduces())
 	rw.Header().Set(runtime.HeaderContentType, format)
 
 	if resp, ok := data.(Responder); ok {

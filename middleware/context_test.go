@@ -253,7 +253,7 @@ func TestContextValidResponseFormat(t *testing.T) {
 	assert.Empty(t, cached)
 
 	// trigger the parse
-	mt := ctx.ResponseFormat(request, []string{ct})
+	mt := ctx.ResponseFormat(request, []string{ct}, "")
 	assert.Equal(t, ct, mt)
 
 	// check it was cached
@@ -262,7 +262,7 @@ func TestContextValidResponseFormat(t *testing.T) {
 	assert.Equal(t, ct, cached)
 
 	// check if the cast works and fetch from cache too
-	mt = ctx.ResponseFormat(request, []string{ct})
+	mt = ctx.ResponseFormat(request, []string{ct}, "")
 	assert.Equal(t, ct, mt)
 }
 
@@ -282,7 +282,7 @@ func TestContextInvalidResponseFormat(t *testing.T) {
 	assert.Empty(t, cached)
 
 	// trigger the parse
-	mt := ctx.ResponseFormat(request, []string{other})
+	mt := ctx.ResponseFormat(request, []string{other}, "")
 	assert.Empty(t, mt)
 
 	// check it was cached
@@ -291,7 +291,7 @@ func TestContextInvalidResponseFormat(t *testing.T) {
 	assert.Empty(t, cached)
 
 	// check if the cast works and fetch from cache too
-	mt = ctx.ResponseFormat(request, []string{other})
+	mt = ctx.ResponseFormat(request, []string{other}, "")
 	assert.Empty(t, mt)
 }
 

@@ -135,7 +135,7 @@ func (v *validation) contentType() {
 }
 
 func (v *validation) responseFormat() {
-	if str := v.context.ResponseFormat(v.request, v.route.Produces); str == "" && runtime.HasBody(v.request) {
+	if str := v.context.ResponseFormat(v.request, v.route.Produces, ""); str == "" && runtime.HasBody(v.request) {
 		v.result = append(v.result, errors.InvalidResponseFormat(v.request.Header.Get(runtime.HeaderAccept), v.route.Produces))
 	}
 }
