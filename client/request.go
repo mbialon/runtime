@@ -88,8 +88,6 @@ func (r *request) BuildHTTP(mediaType string, producers map[string]runtime.Produ
 	var body io.ReadCloser
 	var pr *io.PipeReader
 	var pw *io.PipeWriter
-	buf := bytes.NewBuffer(nil)
-	body = ioutil.NopCloser(buf)
 	if r.fileFields != nil {
 		pr, pw = io.Pipe()
 		body = pr
@@ -150,7 +148,9 @@ func (r *request) BuildHTTP(mediaType string, producers map[string]runtime.Produ
 		// set content length before writing to the buffer
 		req.ContentLength = int64(len(formString))
 		// write the form values as the body
-		buf.WriteString(formString)
+		b := bytes.NewBuffer(nil)
+		b.WriteString(formString)
+		req.Body = ioutil.NopCloser(b)
 		return req, nil
 	}
 
@@ -188,9 +188,7 @@ func (r *request) BuildHTTP(mediaType string, producers map[string]runtime.Produ
 			return nil, err
 		}
 		req.ContentLength = int64(b.Len())
-		if _, err := buf.Write(b.Bytes()); err != nil {
-			return nil, err
-		}
+		req.Body = ioutil.NopCloser(&b)
 	}
 	return req, nil
 }
